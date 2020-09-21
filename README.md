@@ -7,7 +7,7 @@ Everything about open source at Embark, as an open source repo. How meta!
 
 ## Contents
 
-- Embark open-source beliefs and strategy
+- [Embark open-source beliefs and strategy](content/beliefs-strategy.md)
 - [How to Open Source at Embark](content/how-to.md)
 
 ## Contributing
