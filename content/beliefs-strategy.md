@@ -18,8 +18,6 @@ Why we think an open source strategy brings value to Embark.
 
     By sharing what we're interested in and working on, we can start to have conversations with others who are interested in collaborating with us. We may even find unlikely partnerships outside our immediate network and industry.
 
-    Through our open source work, we have already had conversations with many motivated developers who want to tackle issues that are important to us.
-
 ## Strategy
 
 How we engage with open source as a company.
