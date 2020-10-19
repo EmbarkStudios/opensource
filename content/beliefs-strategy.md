@@ -1,3 +1,11 @@
+# Embark Studios Open Source Strategy
+
+At [Embark Studios](https://embark-studios.com), we're on a mission to blur the line between playing and making.
+
+Technology is reshaping our industry, and open source is a big part of that. We want to be part of this change, by exploring and applying the latest technology, by being honest and transparent in our relationship with each other and our community, and by allowing our curiosity to lead us down unexpected paths.
+
+Want to know more about how we're applying our strategy day-to-day? Check out [How to Open Source at Embark](how-to.md).
+
 ## Beliefs
 
 Why we think open source brings value to Embark.
@@ -36,6 +44,6 @@ We work in a lot of spaces where there are big problems with no clear answers. E
 
 💶 **Support strategically.**
 
-We give back to the community and support developers who are making great things, and we strategically invest in projects and developers that share and work towards our goals, directly or indirectly. This can involve monetary sponsorship of individuals or projects, or contract work for specific tasks. 
+We give back to the community and support developers who are making great things, and we strategically invest in projects and developers that share and work towards our goals, directly or indirectly. This can involve monetary sponsorship of individuals or projects, contract work for specific tasks, or allocated resources.
 
 We strongly believe companies that profesionally use and rely on open source software have a responsbility support the developers and maintainers of it.
