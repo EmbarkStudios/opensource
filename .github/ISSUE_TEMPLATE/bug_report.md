@@ -22,7 +22,7 @@ A clear and concise description of what you expected to happen.
 If useful, add screenshots to help explain your problem.
 
 **Code example**
-If possible, share a minimal code reproduction the has the problem.
+If possible, share a minimal code reproduction of the problem.
 
 **Environment:**
  - OS: [e.g. Windows 10, iOS 14]
