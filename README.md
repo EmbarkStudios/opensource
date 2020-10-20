@@ -7,8 +7,10 @@ Everything about open source at Embark, as an open source repo. How meta!
 
 ## Contents
 
-- [Embark open-source beliefs and strategy](content/beliefs-strategy.md)
+- [Our Open Source Beliefs and Strategy](content/beliefs-strategy.md)
 - [How to Open Source at Embark](content/how-to.md)
+- [embark.dev](https://embark.dev) - Our Open Source portal
+- [embark.rs](https://embark.rs) - Our Rust Open Source ecosystem tracking repository
 
 ## Contributing
 
