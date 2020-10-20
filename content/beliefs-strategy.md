@@ -46,4 +46,4 @@ We work in a lot of spaces where there are big problems with no clear answers. E
 
 We give back to the community and support developers who are making great things, and we strategically invest in projects and developers that share and work towards our goals, directly or indirectly. This can involve monetary sponsorship of individuals or projects, contract work for specific tasks, or allocated resources.
 
-We strongly believe companies that profesionally use and rely on open source software have a responsbility support the developers and maintainers of it.
+We strongly believe companies that professionally use and rely on open source software have a responsibility to support the developers and maintainers of it.
