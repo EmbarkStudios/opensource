@@ -39,12 +39,6 @@ You've got a new project - great! At Embark, we believe most things should be op
 
 **as-is**: this repository could still be useful, but doesn't have an active maintainer. It is archived on GitHub.
 
-## Issues and Pull Requests
-
-
-## Releases
-
-
 ## Communication
 
 ### Email
