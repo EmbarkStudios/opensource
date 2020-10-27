@@ -1,7 +1,11 @@
 # Embark Open Source
 
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
-[![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
+[![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](http://embark.games)
+[![Embark](https://img.shields.io/badge/discord-ark-%237289da.svg?logo=discord)](https://discord.gg/dAuKfZS)
+[![Crates.io](https://img.shields.io/crates/v/physx.svg)](https://crates.io/crates/physx)
+[![Docs](https://docs.rs/physx/badge.svg)](https://docs.rs/physx)
+[![dependency status](https://deps.rs/repo/github/EmbarkStudios/physx-rs/status.svg)](https://deps.rs/repo/github/EmbarkStudios/physx-rs)
+![Build Status](https://github.com/EmbarkStudios/physx-rs/workflows/CI/badge.svg)
 
 Everything about open source at Embark, as an open source repo. How meta!
 
@@ -13,6 +17,8 @@ Everything about open source at Embark, as an open source repo. How meta!
 - [embark.rs](https://embark.rs) - Our Rust Open Source ecosystem tracking repository
 
 ## Contributing
+
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4-ff69b4.svg)](../CODE_OF_CONDUCT.md)
 
 We welcome community contributions to this project.
 
