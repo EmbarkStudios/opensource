@@ -23,12 +23,8 @@ You've got a new project - great! At Embark, we believe most things should be op
 
 ### Step-by-step
 
-1. Create a new private or internal repository on GitHub using the [open source template](https://github.com/EmbarkStudios/opensource-template). If you already have a repository and want to maintain the commit history, you can instead add the following components:
-    - README
-    - CODE_OF_CONDUCT
-    - LICENSE
-    - CONTRIBUTING
-    - Issue and PR templates
+1. Create a new private or internal repository on GitHub using the [open source template](https://github.com/EmbarkStudios/opensource-template). If you already have a repository and want to maintain the commit history, you can instead add all the files from the template repository to your project.
+1. Remove `.github/workflows/rust-ci.yml` if the project is not a Rust project.
 1. Customise the README for your project by adding the appropriate name, description, links, and badges. This is also a great time to pick an emoji for the project!
 1. Send the private repo link to the ecosystem team and your manager for approval.
 1. Make the repository public.
