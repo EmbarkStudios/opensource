@@ -24,7 +24,7 @@ Why we think open source brings value to Embark.
 
 3. **Being transparent helps us find collaborators**
 
-    By openely sharing what we're interested in and working on, we connect and start to have conversations with others who are interested in collaborating with us. We've already found multiple new unlikely partnerships outside our immediate network and industry.
+    By openly sharing what we're interested in and working on, we connect and start to have conversations with others who are interested in collaborating with us. We've already found multiple new unlikely partnerships outside our immediate network and industry.
 
 ## Strategy
 
