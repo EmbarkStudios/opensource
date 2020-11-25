@@ -27,11 +27,22 @@ You've got a new project - great! At Embark, we believe most things should be op
 1. If the project is a Rust project edit `.github/workflows/rust-ci.yml` to your needs, resolving all the comments marked `TODO`.
 1. If the project is not a Rust project remove the `.github/workflows/rust-ci.yml` file.
 1. Customise the README for your project by adding the appropriate name, description, links, and badges. This is also a great time to pick an emoji for the project!
+1. Add the [EmbarkStudios / Open Source Admins](https://github.com/orgs/EmbarkStudios/teams/open-source-admins) group as admins in the repo access settings. Ask for assistance on slack if you do not have access to the repo settings.
 1. Send the private repo link to the ecosystem team and your manager for approval.
 1. Make the repository public.
 1. Add the project to the [embark.dev list of open source projects](https://github.com/EmbarkStudios/opensource-website/blob/main/data.json).
 1. If the project is a Rust project add it to the [embark.rs list of open source Rust projects](https://github.com/EmbarkStudios/rust-ecosystem#open-source).
 1. Announce the release on Discord and any other forums such as [/r/rust](https://reddit.com/r/rust). The ecosystem team can help you with this step.
+
+## Publishing new versions
+
+If the project is a Rust project and the steps above have been completed then new versions can be released by following these steps.
+
+1. Change the version in Cargo.toml and commit.
+1. Tag the commit `git tag -a <version> -m "Release <version>"`. Example: `git tag -a 0.1.0 -m "Release 0.1.0"`.
+1. Push the commit(s) and tag `git push --follow-tags`.
+
+This will trigger a CI built that will handle the release process to GitHub and Crates.io.
 
 ## Repository Types
 
