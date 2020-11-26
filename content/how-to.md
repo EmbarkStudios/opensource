@@ -39,7 +39,7 @@ You've got a new project - great! At Embark, we believe most things should be op
 
 If the project is a Rust project and the steps above have been completed then new versions can be released by following these steps.
 
-1. Change the version in Cargo.toml and commit.
+1. Change the version in `Cargo.toml` and commit.
 1. Tag the commit `git tag -a <version> -m "Release <version>"`. Example: `git tag -a 0.1.0 -m "Release 0.1.0"`.
 1. Push the commit(s) and tag `git push --follow-tags`.
 
