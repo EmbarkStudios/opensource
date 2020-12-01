@@ -24,6 +24,7 @@ You've got a new project - great! At Embark, we believe most things should be op
 ### Step-by-step
 
 1. Create a new private or internal repository on GitHub using the [open source template](https://github.com/EmbarkStudios/opensource-template). If you already have a repository and want to maintain the commit history, you can instead add all the files from the template repository to your project.
+1. Edit the `.github/CODEOWNERS` file to contain the GitHub usernames of the project maintainers.
 1. If the project is a Rust project edit `.github/workflows/rust-ci.yml` to your needs, resolving all the comments marked `TODO`.
 1. If the project is not a Rust project remove the `.github/workflows/rust-ci.yml` file.
 1. If the project is a Rust library project to be pushed to Crates.io publish an version publish of the crate with `cargo publish --token <TOKEN>` where `TOKEN` is and API token for the [`embark-studios`](https://crates.io/users/embark-studios) user. This shared bot account allows us to publish all crates under the same user and not have to worry about managing owners.
