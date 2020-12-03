@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-///! Parsing and introspection of GitHub CODEOWNERS files.
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct CodeOwners {
@@ -36,6 +35,13 @@ impl CodeOwners {
             .filter(|assignment| !assignment.owners.is_empty())
             .collect();
         Self { assignments }
+    }
+
+    pub fn primary_maintainers(&self) -> Option<&HashSet<String>> {
+        self.assignments
+            .iter()
+            .find(|assignment| assignment.file_pattern == "*")
+            .map(|assignment| &assignment.owners)
     }
 }
 
