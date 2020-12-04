@@ -56,7 +56,7 @@ pub async fn main() -> eyre::Result<()> {
 
 fn print_status(Project { name, status }: &Project) {
     match status {
-        Ok(maintainers) => println!("✔️  {} ({})", name, maintainers.iter().join(", ")),
+        Ok(maintainers) => println!("✔️ {} ({})", name, maintainers.iter().join(", ")),
         Err(error) => {
             println!("❌ {}", name);
             println!("   {}", error);
