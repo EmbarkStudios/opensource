@@ -11,3 +11,11 @@ cargo run check-maintainers
 This command checks to see if every project listed in the Embark [opensource-website data.json][data.json] has an official maintainer listed in its `CODEOWNERS` file within its repository.
 
 [data.json]: https://github.com/EmbarkStudios/opensource-website/blob/main/data.json
+
+## Testing
+
+This tool has unit tests. Run them like so:
+
+```shell
+cargo test
+```
