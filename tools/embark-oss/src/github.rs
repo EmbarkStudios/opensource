@@ -6,15 +6,12 @@ pub async fn download_repo_file(
     repo: &str,
     branch: &str,
     file: &str,
-) -> eyre::Result<Option<String>> {
-    match download_file(org, repo, branch, file).await? {
-        None => Ok(None),
-        Some((name, response)) => response
-            .text()
-            .await
-            .map(Some)
-            .wrap_err(eyre!("Failed to decode {}", name)),
-    }
+) -> eyre::Result<String> {
+    let (name, response) = download_file(org, repo, branch, file).await?;
+    response
+        .text()
+        .await
+        .wrap_err(eyre!("Failed to decode {}", name))
 }
 
 pub async fn download_repo_json_file<Json: DeserializeOwned>(
@@ -22,15 +19,12 @@ pub async fn download_repo_json_file<Json: DeserializeOwned>(
     repo: &str,
     branch: &str,
     file: &str,
-) -> eyre::Result<Option<Json>> {
-    match download_file(org, repo, branch, file).await? {
-        None => Ok(None),
-        Some((name, response)) => response
-            .json()
-            .await
-            .map(Some)
-            .wrap_err(eyre!("Failed to decode {}", name)),
-    }
+) -> eyre::Result<Json> {
+    let (name, response) = download_file(org, repo, branch, file).await?;
+    response
+        .json()
+        .await
+        .wrap_err(eyre!("Failed to decode {}", name))
 }
 
 pub async fn download_file(
@@ -38,21 +32,23 @@ pub async fn download_file(
     repo: &str,
     branch: &str,
     file: &str,
-) -> eyre::Result<Option<(String, reqwest::Response)>> {
-    let name = format!("{}/{}/{}/{}", org, repo, branch, file);
-    let url = format!("https://raw.githubusercontent.com/{}", name);
+) -> eyre::Result<(String, reqwest::Response)> {
+    let path = format!("{}/{}/{}/{}", org, repo, branch, file);
+    let name = format!("{}/{}:{}", org, repo, file);
+    let url = format!("https://raw.githubusercontent.com/{}", path);
     let response = reqwest::get(&url)
         .await
         .wrap_err(format!("Failed to download {}", name))?;
 
     // Ensure the file was successfully downloaded
     if response.status() == 404 {
-        return Ok(None);
+        return Err(eyre!("File not found in repo"))
+            .wrap_err(format!("Unable to download {}", name))?;
     }
     if response.status() != 200 {
         return Err(eyre!("Expected status code 200, got {}", response.status()))
             .wrap_err(format!("Unable to download {}", name))?;
     }
 
-    Ok(Some((name, response)))
+    Ok((name, response))
 }
