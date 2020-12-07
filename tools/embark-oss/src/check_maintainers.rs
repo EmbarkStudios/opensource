@@ -1,5 +1,6 @@
 use crate::codeowners::CodeOwners;
 use eyre::{eyre, WrapErr};
+use futures::TryFutureExt;
 use itertools::Itertools;
 use std::collections::HashSet;
 
@@ -90,9 +91,21 @@ async fn lookup_project(project: OpenSourceWebsiteProject) -> Project {
 }
 
 async fn lookup_project_status(name: &str) -> Result<HashSet<String>, Error> {
+    let get = |branch| lookup_project_status_for_branch(name, branch);
+    get("main")
+        .or_else(|_| get("master"))
+        .or_else(|_| get("trunk"))
+        .or_else(|_| get("develop"))
+        .await
+}
+
+async fn lookup_project_status_for_branch(
+    name: &str,
+    branch: &str,
+) -> Result<HashSet<String>, Error> {
     let url = format!(
-        "https://raw.githubusercontent.com/EmbarkStudios/{}/main/.github/CODEOWNERS",
-        name
+        "https://raw.githubusercontent.com/EmbarkStudios/{}/{}/.github/CODEOWNERS",
+        name, branch
     );
     // Download the CODEOWNERS file
     let response = reqwest::get(&url)
