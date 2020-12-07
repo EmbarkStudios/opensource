@@ -1,11 +1,8 @@
-use crate::codeowners::CodeOwners;
-use eyre::{eyre, WrapErr};
+use crate::{codeowners::CodeOwners, github};
+use eyre::eyre;
 use futures::TryFutureExt;
 use itertools::Itertools;
 use std::collections::HashSet;
-
-const OPENSOURCE_WEBSITE_DATA_URL: &str =
-    "https://raw.githubusercontent.com/EmbarkStudios/opensource-website/main/data.json";
 
 #[derive(Debug)]
 enum Error {
@@ -66,20 +63,18 @@ fn print_status(Project { name, status }: &Project) {
 }
 
 async fn download_projects_list() -> eyre::Result<Vec<OpenSourceWebsiteProject>> {
-    let response = reqwest::get(OPENSOURCE_WEBSITE_DATA_URL)
-        .await
-        .wrap_err("Failed to download Embark open source website data.json")?;
-
-    if response.status() != 200 {
-        return Err(eyre!("Expected status code 200, got {}", response.status()))
-            .wrap_err("Unable to download Embark open source website data.json");
+    let result = github::download_repo_json_file::<OpenSourceWebsiteData>(
+        "EmbarkStudios",
+        "opensource-website",
+        "main",
+        "data.json",
+    )
+    .await;
+    match result {
+        Ok(Some(data)) => Ok(data.projects),
+        Ok(None) => Err(eyre!("opensource-website/data.json not found")),
+        Err(e) => Err(e),
     }
-
-    Ok(response
-        .json::<OpenSourceWebsiteData>()
-        .await
-        .wrap_err("Failed to parse OSS website data.json")?
-        .projects)
 }
 
 async fn lookup_project(project: OpenSourceWebsiteProject) -> Project {
@@ -103,32 +98,13 @@ async fn lookup_project_status_for_branch(
     name: &str,
     branch: &str,
 ) -> Result<HashSet<String>, Error> {
-    let url = format!(
-        "https://raw.githubusercontent.com/EmbarkStudios/{}/{}/.github/CODEOWNERS",
-        name, branch
-    );
-    // Download the CODEOWNERS file
-    let response = reqwest::get(&url)
-        .await
-        .wrap_err(format!("Failed to download CODEOWNERS for {}", name))
-        .map_err(Error::UnknownError)?;
-
-    // Ensure the CODEOWNERS file was successfully downloaded
-    if response.status() == 404 {
-        return Err(Error::NoCodeOwnersFile);
-    }
-    if response.status() != 200 {
-        return Err(eyre!("Expected status code 200, got {}", response.status()))
-            .wrap_err("Unable to download Embark open source website data.json")
-            .map_err(Error::UnknownError)?;
-    }
-
-    // Parse the body to get the CODEOWNERS file contents
-    let text = response
-        .text()
-        .await
-        .wrap_err(format!("Failed to get CODEOWNERS text body for {}", name))
-        .map_err(Error::UnknownError)?;
+    let result =
+        github::download_repo_file("EmbarkStudios", name, branch, ".github/CODEOWNERS").await;
+    let text = match result {
+        Ok(Some(text)) => text,
+        Ok(None) => return Err(Error::NoCodeOwnersFile),
+        Err(e) => return Err(Error::UnknownError(e)),
+    };
 
     // Determine if there is at least 1 primary maintainer listed for each project
     CodeOwners::new(&text)
