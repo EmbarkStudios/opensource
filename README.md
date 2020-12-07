@@ -8,7 +8,8 @@ Everything about open source at Embark, as an open source repo. How meta!
 ## Contents
 
 - [Our Open Source Beliefs and Strategy](content/beliefs-strategy.md)
-- [How to Open Source at Embark](content/how-to.md)
+- [How to Open Source a project at Embark](content/how-to.md)
+- [How to maintain an Embark Open Source project](content/maintenance-guidelines.md)
 - [embark.dev](https://embark.dev) - Our Open Source portal
 - [embark.rs](https://embark.rs) - Our Rust Open Source ecosystem tracking repository
 
@@ -24,8 +25,8 @@ Please read our [Contributor Guide](CONTRIBUTING.md) for more information on how
 
 Licensed under either of
 
-* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
