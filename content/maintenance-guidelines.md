@@ -1,5 +1,9 @@
 # Open source maintenance guidelines
 
+This document details Embark's guidelines for open source project
+maintenance. All our open source projects have explicit maintainers who are
+responsible for managing the project and adhereing to these guidelines.
+
 ## Share responsibility
 
 Maintaining an open source project can at times be tiring or time-consuming.
@@ -91,12 +95,15 @@ tell the current state of work on the project.
 When closing leave a message thanking them for their contribution and
 inviting them to reopen the pull request when they have further changes.
 
-## Perform hand overs
+## Perform hand-overs
 
 If you are unable to maintain the project for a period of time, e.g. if you
 are going on holiday, find another person at Embark to temporarily take over
-your responsibilities. Add to this person as a code owner to the repository
-to ensure they get appropriate notifications to new issues and pull requests.
+your responsibilities. Add to this person as a [code owner][codeowner] to the
+repository to ensure they get appropriate notifications to new issues and
+pull requests.
+
+[codeowner]: https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/about-code-owners
 
 If you are leaving Embark or no longer have the desire or capacity to
 maintain the project, find another person to adopt the role of maintainer.
@@ -112,8 +119,10 @@ out to the ecosystem team for support. They can be reached via the
 
 ## Adhere to the code of conduct
 
-All open source Embark projects have a code of conduct which details the
-expected standards of behaviour to which all community members must adhere.
-Read the code of conduct and ensure that both yourself and your contributors
-follow it. If you have a problem with a community member violating the code
-of conduct reach out to the ecosystem team for help.
+All open source Embark projects have a [code of conduct][coc] which details
+the expected standards of behaviour to which all community members must
+adhere. Read the code of conduct and ensure that both yourself and your
+contributors follow it. If you have a problem with a community member
+violating the code of conduct reach out to the ecosystem team for help.
+
+[coc]: https://github.com/EmbarkStudios/opensource/blob/main/CODE_OF_CONDUCT.md
