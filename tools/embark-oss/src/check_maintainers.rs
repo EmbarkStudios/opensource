@@ -4,31 +4,14 @@ use futures::TryFutureExt;
 use itertools::Itertools;
 use std::collections::HashSet;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 enum Error {
+    #[error("No maintainers were found for * the CODEOWNERS file")]
     NoPrimaryMaintainer,
+    #[error("No CODEOWNERS file could be read for this project")]
     NoCodeOwnersFile,
+    #[error("{0}")]
     UnknownError(eyre::Error),
-}
-
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::NoPrimaryMaintainer => {
-                write!(f, "No maintainers were found for * the CODEOWNERS file.")
-            }
-            Self::NoCodeOwnersFile => {
-                write!(f, "No CODEOWNERS file could be read for this project.")
-            }
-            Self::UnknownError(error) => error.fmt(f),
-        }
-    }
-}
-
-impl std::error::Error for Error {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        None
-    }
 }
 
 #[derive(Debug)]
