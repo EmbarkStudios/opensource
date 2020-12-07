@@ -4,20 +4,10 @@ use futures::TryFutureExt;
 use itertools::Itertools;
 use std::collections::HashSet;
 
-#[derive(Debug, thiserror::Error)]
-enum Error {
-    #[error("No maintainers were found for * the CODEOWNERS file")]
-    NoPrimaryMaintainer,
-    #[error("No CODEOWNERS file could be read for this project")]
-    NoCodeOwnersFile,
-    #[error("{0}")]
-    UnknownError(eyre::Error),
-}
-
 #[derive(Debug)]
 struct Project {
     name: String,
-    status: Result<HashSet<String>, Error>,
+    status: Result<HashSet<String>, eyre::Report>,
 }
 
 pub async fn main() -> eyre::Result<()> {
@@ -40,24 +30,20 @@ fn print_status(Project { name, status }: &Project) {
         Ok(maintainers) => println!("✔️ {} ({})", name, maintainers.iter().join(", ")),
         Err(error) => {
             println!("❌ {}", name);
-            println!("   {}", error);
+            println!("   {:?}", error);
         }
     }
 }
 
 async fn download_projects_list() -> eyre::Result<Vec<OpenSourceWebsiteProject>> {
-    let result = github::download_repo_json_file::<OpenSourceWebsiteData>(
+    let data = github::download_repo_json_file::<OpenSourceWebsiteData>(
         "EmbarkStudios",
         "opensource-website",
         "main",
         "data.json",
     )
-    .await;
-    match result {
-        Ok(Some(data)) => Ok(data.projects),
-        Ok(None) => Err(eyre!("opensource-website/data.json not found")),
-        Err(e) => Err(e),
-    }
+    .await?;
+    Ok(data.projects)
 }
 
 async fn lookup_project(project: OpenSourceWebsiteProject) -> Project {
@@ -68,32 +54,17 @@ async fn lookup_project(project: OpenSourceWebsiteProject) -> Project {
     }
 }
 
-async fn lookup_project_status(name: &str) -> Result<HashSet<String>, Error> {
-    let get = |branch| lookup_project_status_for_branch(name, branch);
-    get("main")
-        .or_else(|_| get("master"))
-        .or_else(|_| get("trunk"))
-        .or_else(|_| get("develop"))
-        .await
-}
-
-async fn lookup_project_status_for_branch(
-    name: &str,
-    branch: &str,
-) -> Result<HashSet<String>, Error> {
-    let result =
-        github::download_repo_file("EmbarkStudios", name, branch, ".github/CODEOWNERS").await;
-    let text = match result {
-        Ok(Some(text)) => text,
-        Ok(None) => return Err(Error::NoCodeOwnersFile),
-        Err(e) => return Err(Error::UnknownError(e)),
-    };
+async fn lookup_project_status(name: &str) -> eyre::Result<HashSet<String>> {
+    // Download CODEOWNERS from one of the accepted branches
+    let get =
+        |branch| github::download_repo_file("EmbarkStudios", name, branch, ".github/CODEOWNERS");
+    let text = get("main").or_else(|_| get("master")).await?;
 
     // Determine if there is at least 1 primary maintainer listed for each project
-    CodeOwners::new(&text)
+    CodeOwners::new(&text)?
         .primary_maintainers()
         .cloned()
-        .ok_or(Error::NoPrimaryMaintainer)
+        .ok_or(eyre!("No maintainers were found for * the CODEOWNERS file"))
 }
 
 #[derive(Debug, serde::Deserialize)]

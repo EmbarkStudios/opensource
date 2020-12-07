@@ -1,3 +1,4 @@
+use eyre::{eyre, WrapErr};
 use std::collections::HashSet;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -19,22 +20,44 @@ pub struct Assignment {
     owners: HashSet<String>,
 }
 
+impl Assignment {
+    pub fn from_line(line: &str) -> eyre::Result<Self> {
+        let mut iter = line.split_whitespace().map(String::from);
+        let file_pattern = iter
+            .next()
+            .ok_or_else(|| eyre!("No file pattern for CODEOWNERS line"))?;
+        let owners = iter
+            .map(validate_name_format)
+            .collect::<eyre::Result<HashSet<String>>>()
+            .wrap_err_with(|| format!("Unable to parse CODEOWNERS for {}", file_pattern))?;
+        if owners.is_empty() {
+            return Err(eyre!("File pattern `{}` has no owners", file_pattern));
+        }
+        Ok(Assignment {
+            file_pattern,
+            owners,
+        })
+    }
+}
+
+fn validate_name_format(name: String) -> eyre::Result<String> {
+    if name.starts_with("@") {
+        Ok(name.trim_start_matches("@").to_string())
+    } else {
+        Err(eyre!("Code owner `{}` does not start with an @", name))
+    }
+}
+
 impl CodeOwners {
-    pub fn new(source: &str) -> Self {
+    pub fn new(source: &str) -> eyre::Result<Self> {
         let assignments = source
             .lines()
             .map(|line| line.trim())
             .filter(|line| !line.starts_with("#"))
-            .flat_map(|line| {
-                let mut iter = line.split_whitespace().map(String::from);
-                Some(Assignment {
-                    file_pattern: iter.next()?,
-                    owners: iter.collect(),
-                })
-            })
-            .filter(|assignment| !assignment.owners.is_empty())
-            .collect();
-        Self { assignments }
+            .filter(|line| !line.is_empty())
+            .map(Assignment::from_line)
+            .collect::<eyre::Result<_>>()?;
+        Ok(Self { assignments })
     }
 
     pub fn primary_maintainers(&self) -> Option<&HashSet<String>> {
@@ -52,21 +75,21 @@ mod tests {
     #[test]
     fn parsing() {
         assert_eq!(
-            CodeOwners::new(""),
+            CodeOwners::new("").unwrap(),
             CodeOwners {
                 assignments: vec![]
             }
         );
 
         assert_eq!(
-            CodeOwners::new("# * lpil"),
+            CodeOwners::new("# * @lpil").unwrap(),
             CodeOwners {
                 assignments: vec![]
             }
         );
 
         assert_eq!(
-            CodeOwners::new("* lpil"),
+            CodeOwners::new("* @lpil").unwrap(),
             CodeOwners {
                 assignments: vec![Assignment {
                     file_pattern: "*".to_string(),
@@ -76,7 +99,7 @@ mod tests {
         );
 
         assert_eq!(
-            CodeOwners::new("* lpil arirawr"),
+            CodeOwners::new("* @lpil @arirawr").unwrap(),
             CodeOwners {
                 assignments: vec![Assignment {
                     file_pattern: "*".to_string(),
@@ -86,15 +109,20 @@ mod tests {
         );
 
         assert_eq!(
+            CodeOwners::new("* @lpil arirawr").unwrap_err().to_string(),
+            "Unable to parse CODEOWNERS for *",
+        );
+
+        assert_eq!(
             CodeOwners::new(
-                "* lpil arirawr
+                "* @lpil @arirawr
 # comment 
     # comment 
-left XAMPPRocky
+left @XAMPPRocky
 
-no-maintainers
-right/ok celialewis3     soniasingla    \n"
-            ),
+right/ok @celialewis3     @soniasingla    \n"
+            )
+            .unwrap(),
             CodeOwners {
                 assignments: vec![
                     Assignment {
