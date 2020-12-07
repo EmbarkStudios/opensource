@@ -13,6 +13,10 @@ Everything about open source at Embark, as an open source repo. How meta!
 - [embark.dev](https://embark.dev) - Our Open Source portal
 - [embark.rs](https://embark.rs) - Our Rust Open Source ecosystem tracking repository
 
+## Tools
+
+The `/tools` directory contains some programs for validating Embark's open source projects. See their README files for more details.
+
 ## Contributing
 
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4-ff69b4.svg)](../CODE_OF_CONDUCT.md)
