@@ -14,7 +14,8 @@ You've got a new project - great! At Embark, we believe most things should be op
 - **Does it rely on internal or proprietary systems?**
   - We don't want to release anything that could harm Embark from a security or intellectual property perspective. We also don't want to release something that doesn't work for non-Embarkers because it relies on an internal system. **You need to consult with your manager to assess any risks associated with releasing your project.**
 
-- **Can you commit to maintaining it and answering issues and PRs for the foreseeable future?**
+- **Can you commit to maintaining the project for the foreseeable future?**
+  - See the [maintenance guidelines](./maintenance-guidelines) to see what is required from an Embark open source maintainer.
   - If no, you can still release ["as-is"](#repository-types) in an archived GitHub repository.
 
 - **Is it high enough quality?**
