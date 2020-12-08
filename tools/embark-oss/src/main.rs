@@ -44,6 +44,7 @@ mod check_maintainers;
 mod codeowners;
 mod error;
 mod github;
+mod slack;
 
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
@@ -52,12 +53,17 @@ use structopt::StructOpt;
 #[structopt(global_settings = &[AppSettings::ColoredHelp, AppSettings::VersionlessSubcommands])]
 enum Command {
     #[structopt(about = "Check all projects have a maintainer at Embark")]
-    CheckMaintainers {},
+    CheckMaintainers {
+        #[structopt(long("slack-webhook-url"))]
+        slack_webhook_url: Option<String>,
+    },
 }
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
     match Command::from_args() {
-        Command::CheckMaintainers {} => check_maintainers::main().await,
+        Command::CheckMaintainers { slack_webhook_url } => {
+            check_maintainers::main(slack_webhook_url).await
+        }
     }
 }

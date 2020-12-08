@@ -12,6 +12,10 @@ This command checks to see if every project listed in the Embark [opensource-web
 
 [data.json]: https://github.com/EmbarkStudios/opensource-website/blob/main/data.json
 
+### Flags
+
+- `--slack-webhook-url`: An optional Slack webhook URL that is used to report problems.
+
 ## Testing
 
 This tool has unit tests. Run them like so:
