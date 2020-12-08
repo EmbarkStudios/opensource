@@ -25,7 +25,7 @@ impl Assignment {
         let mut iter = line.split_whitespace().map(String::from);
         let file_pattern = iter
             .next()
-            .ok_or_else(|| eyre!("No file pattern for CODEOWNERS line"))?;
+            .ok_or_else(|| eyre!("No file pattern for code owners line"))?;
         let owners = iter
             .map(validate_name_format)
             .collect::<eyre::Result<HashSet<String>>>()
@@ -110,7 +110,7 @@ mod tests {
 
         assert_eq!(
             CodeOwners::new("* @lpil arirawr").unwrap_err().to_string(),
-            "Unable to parse CODEOWNERS for *",
+            "Unable to parse code owners for *",
         );
 
         assert_eq!(

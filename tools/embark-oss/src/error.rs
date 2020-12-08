@@ -1,8 +1,10 @@
 use eyre::Chain;
-use std::{error::Error, io::Write};
+use std::{error::Error, fmt::Write};
 
 /// Write the error and the cause
-pub fn write_cause(f: &mut impl Write, error: &(dyn Error + 'static), should_indent: bool) {
+pub fn cause_string(error: &(dyn Error + 'static), should_indent: bool) -> String {
+    let mut f = String::new();
+
     macro_rules! indent {
         () => {
             if should_indent {
@@ -23,4 +25,5 @@ pub fn write_cause(f: &mut impl Write, error: &(dyn Error + 'static), should_ind
             write!(f, "    {}: {}\n", i, error).unwrap();
         }
     }
+    f
 }
