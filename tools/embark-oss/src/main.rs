@@ -42,6 +42,7 @@
 
 mod check_maintainers;
 mod codeowners;
+mod error;
 mod github;
 
 use structopt::clap::AppSettings;

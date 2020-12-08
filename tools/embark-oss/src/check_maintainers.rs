@@ -1,5 +1,5 @@
 use crate::{codeowners::CodeOwners, github};
-use eyre::eyre;
+use eyre::{eyre, WrapErr};
 use futures::TryFutureExt;
 use itertools::Itertools;
 use std::collections::HashSet;
@@ -29,8 +29,12 @@ fn print_status(Project { name, status }: &Project) {
     match status {
         Ok(maintainers) => println!("✔️ {} ({})", name, maintainers.iter().join(", ")),
         Err(error) => {
-            println!("❌ {}", name);
-            println!("   {:?}", error);
+            use std::io::Write;
+            let stdout = std::io::stdout();
+            let mut handle = stdout.lock();
+            writeln!(handle, "❌ {}", name).unwrap();
+            crate::error::write_cause(&mut handle, error.as_ref(), true);
+            writeln!(handle).unwrap();
         }
     }
 }
@@ -42,7 +46,8 @@ async fn download_projects_list() -> eyre::Result<Vec<OpenSourceWebsiteProject>>
         "main",
         "data.json",
     )
-    .await?;
+    .await
+    .wrap_err("Unable to get list of open source Embark projects")?;
     Ok(data.projects)
 }
 
@@ -61,7 +66,8 @@ async fn lookup_project_status(name: &str) -> eyre::Result<HashSet<String>> {
     let text = get("main").or_else(|_| get("master")).await?;
 
     // Determine if there is at least 1 primary maintainer listed for each project
-    CodeOwners::new(&text)?
+    CodeOwners::new(&text)
+        .wrap_err("Unable to determine maintainers")?
         .primary_maintainers()
         .cloned()
         .ok_or(eyre!("No maintainers were found for * the CODEOWNERS file"))

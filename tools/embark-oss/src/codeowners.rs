@@ -29,7 +29,7 @@ impl Assignment {
         let owners = iter
             .map(validate_name_format)
             .collect::<eyre::Result<HashSet<String>>>()
-            .wrap_err_with(|| format!("Unable to parse CODEOWNERS for {}", file_pattern))?;
+            .wrap_err_with(|| format!("Unable to parse code owners for {}", file_pattern))?;
         if owners.is_empty() {
             return Err(eyre!("File pattern `{}` has no owners", file_pattern));
         }
