@@ -23,7 +23,7 @@ impl Project {
     }
 
     pub async fn validate(self) -> Self {
-        Project {
+        Self {
             maintainers: lookup_project_maintainers(&self.name).await,
             name: self.name,
         }
@@ -97,7 +97,7 @@ pub async fn all(slack_webhook_url: Option<String>) -> eyre::Result<()> {
     Err(eyre!("Not all projects conform to our guidelines"))
 }
 
-/// Validate a single project from the EmbarkStudios GitHub organisation.
+/// Validate a single project from the Embark Studios GitHub organisation.
 pub async fn one(project_name: String) -> eyre::Result<()> {
     let project = Project::new(project_name).validate().await;
     print_status(&project);
@@ -147,7 +147,7 @@ async fn lookup_project_maintainers(name: &str) -> eyre::Result<HashSet<String>>
         .wrap_err("Unable to determine maintainers")?
         .primary_maintainers()
         .cloned()
-        .ok_or(eyre!("No maintainers were found for * the CODEOWNERS file"))
+        .ok_or_else(|| eyre!("No maintainers were found for * the CODEOWNERS file"))
 }
 
 #[derive(Debug, serde::Deserialize)]

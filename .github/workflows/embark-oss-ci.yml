@@ -1,0 +1,44 @@
+on: [push, pull_request]
+
+defaults:
+  run:
+    working-directory: ./tools/embark-oss
+
+name: embark-oss CI
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      # make sure all code has been formatted with rustfmt
+      - run: rustup component add rustfmt
+      - name: check rustfmt
+        run: cargo fmt -- --check --color always
+
+      # run clippy to verify we have no warnings
+      - run: rustup component add clippy
+      - run: cargo fetch
+      - run: cargo clippy --tests -- -D warnings
+
+  test:
+    name: Test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - run: cargo fetch
+      - run: cargo build --tests
+      - run: cargo test
+      - run: cargo run validate-all

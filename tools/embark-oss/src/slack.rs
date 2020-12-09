@@ -8,7 +8,7 @@ pub enum Block {
 }
 
 impl Block {
-    pub fn to_json(self) -> serde_json::Value {
+    pub fn into_json(self) -> serde_json::Value {
         match self {
             Self::Divider => json!({ "type": "divider" }),
             Self::Text(text) => json!({
@@ -20,7 +20,7 @@ impl Block {
 }
 
 fn blocks_json(blocks: Vec<Block>) -> serde_json::Value {
-    let blocks = blocks.into_iter().map(|b| b.to_json()).collect();
+    let blocks = blocks.into_iter().map(|b| b.into_json()).collect();
     json!({
         "blocks": serde_json::Value::Array(blocks),
     })

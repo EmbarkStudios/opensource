@@ -33,7 +33,7 @@ impl Assignment {
         if owners.is_empty() {
             return Err(eyre!("File pattern `{}` has no owners", file_pattern));
         }
-        Ok(Assignment {
+        Ok(Self {
             file_pattern,
             owners,
         })
@@ -41,8 +41,8 @@ impl Assignment {
 }
 
 fn validate_name_format(name: String) -> eyre::Result<String> {
-    if name.starts_with("@") {
-        Ok(name.trim_start_matches("@").to_string())
+    if name.starts_with('@') {
+        Ok(name.trim_start_matches('@').to_string())
     } else {
         Err(eyre!("Code owner `{}` does not start with an @", name))
     }
@@ -53,7 +53,7 @@ impl CodeOwners {
         let assignments = source
             .lines()
             .map(|line| line.trim())
-            .filter(|line| !line.starts_with("#"))
+            .filter(|line| !line.starts_with('#'))
             .filter(|line| !line.is_empty())
             .map(Assignment::from_line)
             .collect::<eyre::Result<_>>()?;
