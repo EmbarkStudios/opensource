@@ -21,4 +21,4 @@ jobs:
 
       - run: cargo fetch
       - run: cargo build
-      - run: cargo run check-maintainers --slack-webhook-url ${{ secrets.SLACK_WEBHOOK_URL }}
+      - run: cargo run validate-all --slack-webhook-url ${{ secrets.SLACK_WEBHOOK_URL }}

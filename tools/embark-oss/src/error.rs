@@ -17,7 +17,7 @@ pub fn cause_string(error: &(dyn Error + 'static), should_indent: bool) -> Strin
     write!(f, "{}", error).unwrap();
 
     if let Some(cause) = error.source() {
-        write!(f, "\n\n").unwrap();
+        write!(f, "\n").unwrap();
         indent!();
         write!(f, "Caused by:\n").unwrap();
         for (i, error) in Chain::new(cause).enumerate() {
