@@ -1,0 +1,24 @@
+on: 
+  schedule:
+    # At 11:00 on every day-of-week from Monday through Friday. https://crontab.guru/#0_11_*_*_1-5
+    - '0 11 * * 1-5'
+
+defaults:
+  run:
+    working-directory: ./tools/embark-oss
+
+name: embark-oss CI
+jobs:
+  validate_projects:
+    name: Validate projects
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - run: cargo fetch
+      - run: cargo build
+      - run: cargo run check-maintainers --slack-webhook-url ${{ secrets.SLACK_WEBHOOK_URL }}
