@@ -1,4 +1,7 @@
-on: [push, pull_request]
+on: 
+  schedule:
+    # At 11:00 on every day-of-week from Monday through Friday. https://crontab.guru/#0_11_*_*_1-5
+    - '0 11 * * 1-5'
 
 defaults:
   run:
@@ -17,4 +20,5 @@ jobs:
           override: true
 
       - run: cargo fetch
+      - run: cargo build
       - run: cargo run check-maintainers --slack-webhook-url ${{ secrets.SLACK_WEBHOOK_URL }}
