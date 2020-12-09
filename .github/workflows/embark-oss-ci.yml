@@ -24,7 +24,7 @@ jobs:
       # run clippy to verify we have no warnings
       - run: rustup component add clippy
       - run: cargo fetch
-      - run: cargo clippy --lib --tests -- -D warnings
+      - run: cargo clippy --tests -- -D warnings
 
   test:
     name: Test
@@ -39,5 +39,6 @@ jobs:
           toolchain: stable
           override: true
       - run: cargo fetch
-      - run: cargo build --tests --release
-      - run: cargo test --release
+      - run: cargo build --tests
+      - run: cargo test
+      - run: cargo run check-maintainers
