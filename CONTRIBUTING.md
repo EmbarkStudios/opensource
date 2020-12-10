@@ -4,7 +4,7 @@ Welcome! This project is created by the team at [Embark Studios](https://embark.
 
 At Embark, we aspire to empower everyone to create interactive experiences. To do this, we're exploring and pushing the boundaries of new technologies, and sharing our learnings with the open source community.
 
-If you have any difficulties getting involved or finding answers to your questions, please don't hesitate to ask your questions in our [discord](https://discord.com/invite/8TW9nfF) channel.
+If you have any difficulties getting involved or finding answers to your questions, please don't hesitate to ask your questions in our [Discord server](https://discord.com/invite/8TW9nfF).
 
 If you have ideas for collaboration, email us at opensource@embark-studios.com.
 
