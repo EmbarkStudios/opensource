@@ -1,4 +1,4 @@
-use crate::{codeowners::CodeOwners, github, slack};
+use crate::{github, slack};
 use eyre::{eyre, WrapErr};
 use futures::TryFutureExt;
 use itertools::Itertools;
@@ -22,9 +22,9 @@ impl Project {
         Self::new(project.name)
     }
 
-    pub async fn validate(self) -> Self {
+    pub async fn validate(self, org_members: &HashSet<String>) -> Self {
         Self {
-            maintainers: lookup_project_maintainers(&self.name).await,
+            maintainers: lookup_project_maintainers(&self.name, org_members).await,
             name: self.name,
         }
     }
@@ -69,9 +69,14 @@ fn not_yet_checked<T>() -> eyre::Result<T> {
 /// Validate all projects listed in the data.json of the Embark Open Source
 /// website.
 pub async fn all(slack_webhook_url: Option<String>) -> eyre::Result<()> {
+    // Lookup required contextual information
+    let members = github::public_organisation_members("EmbarkStudios").await?;
+
     // Download list of projects and download CODEOWNERS file for each one
     let projects = download_projects_list().await?;
-    let futures = projects.into_iter().map(|project| project.validate());
+    let futures = projects
+        .into_iter()
+        .map(|project| project.validate(&members));
     let projects = futures::future::join_all(futures).await;
 
     // Print results
@@ -99,7 +104,11 @@ pub async fn all(slack_webhook_url: Option<String>) -> eyre::Result<()> {
 
 /// Validate a single project from the Embark Studios GitHub organisation.
 pub async fn one(project_name: String) -> eyre::Result<()> {
-    let project = Project::new(project_name).validate().await;
+    // Lookup required contextual information
+    let members = github::public_organisation_members("EmbarkStudios").await?;
+
+    // Validate project
+    let project = Project::new(project_name).validate(&members).await;
     print_status(&project);
     if project.has_errors() {
         Err(eyre!("The project does not conform to our guidelines"))
@@ -136,18 +145,35 @@ async fn download_projects_list() -> eyre::Result<Vec<Project>> {
         .collect())
 }
 
-async fn lookup_project_maintainers(name: &str) -> eyre::Result<HashSet<String>> {
+async fn lookup_project_maintainers(
+    name: &str,
+    members: &HashSet<String>,
+) -> eyre::Result<HashSet<String>> {
     // Download CODEOWNERS from one of the accepted branches
     let get =
         |branch| github::download_repo_file("EmbarkStudios", name, branch, ".github/CODEOWNERS");
-    let text = get("main").or_else(|_| get("master")).await?;
+    let text = get("main")
+        .or_else(|_| get("master"))
+        .await
+        .wrap_err("Unable to determine maintainers")?;
 
     // Determine if there is at least 1 primary maintainer listed for each project
-    CodeOwners::new(&text)
+    let maintainers = github::CodeOwners::new(&text)
         .wrap_err("Unable to determine maintainers")?
         .primary_maintainers()
         .cloned()
-        .ok_or_else(|| eyre!("No maintainers were found for * the CODEOWNERS file"))
+        .ok_or_else(|| eyre!("No maintainers were found for * the CODEOWNERS file"))?;
+
+    // Ensure all maintainers are in the EmbarkStudios organisation
+    let mut maintainers_not_in_embark = maintainers.difference(members).peekable();
+    if maintainers_not_in_embark.peek().is_some() {
+        return Err(eyre!(
+            "Maintainers not public EmbarkStudios members: {}",
+            maintainers_not_in_embark.join(", "),
+        ));
+    }
+
+    Ok(maintainers)
 }
 
 #[derive(Debug, serde::Deserialize)]

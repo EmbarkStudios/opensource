@@ -40,7 +40,6 @@
     unused_results
 )]
 
-mod codeowners;
 mod error;
 mod github;
 mod slack;
