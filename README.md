@@ -13,9 +13,9 @@ Everything about open source at Embark, as an open source repo. How meta!
 - [embark.dev](https://embark.dev) - Our Open Source portal
 - [embark.rs](https://embark.rs) - Our Rust Open Source ecosystem tracking repository
 
-## Tools
+## Tooling
 
-The `/tools` directory contains some programs for validating Embark's open source projects. See their README files for more details.
+This repo also contains a program for validating Embark's open source projects. See [its documentation](content/tooling.md) for more information.
 
 ## Contributing
 

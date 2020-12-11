@@ -1,9 +1,5 @@
 on: [push, pull_request]
 
-defaults:
-  run:
-    working-directory: ./tools/embark-oss
-
 name: embark-oss CI
 jobs:
   lint:
