@@ -23,3 +23,7 @@ eyre = "0.6"
 futures = "0.3"
 # Combinators for iterators
 itertools = "0.9"
+# Lazily created static values
+lazy_static = "1.4"
+# Regular expressions for text parsing
+regex = "1.4"
