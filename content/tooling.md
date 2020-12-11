@@ -1,6 +1,12 @@
-# Embark OSS tool
+# Embark OSS tooling
 
-This tool is used to validate that our open source projects adhere to our open source guidelines.
+This program is used to validate that our open source projects adhere to our open source guidelines.
+
+## Periodic jobs
+
+### Project validation
+
+Every weekday the [`validate-all`](#cargo-run-validate-all) command is run on GitHub actions, sending us a Slack notification if any problems are found.
 
 ## Commands
 
@@ -9,7 +15,6 @@ This tool is used to validate that our open source projects adhere to our open s
 This command checks to see if every project listed in the Embark [opensource-website data.json][data.json] conforms to our open source guidelines to the extent that this tool can detect.
 
 [data.json]: https://github.com/EmbarkStudios/opensource-website/blob/main/data.json
-
 
 #### Flags
 
