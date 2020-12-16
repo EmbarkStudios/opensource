@@ -42,6 +42,7 @@
 
 mod error;
 mod github;
+mod orbit;
 mod slack;
 mod validate;
 
