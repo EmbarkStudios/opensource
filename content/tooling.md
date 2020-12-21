@@ -19,6 +19,7 @@ This command checks to see if every project listed in the Embark [opensource-web
 #### Flags
 
 - `--slack-webhook-url`: An optional Slack webhook URL that is used to report problems.
+- `--github-api-token`: An optional API token used to raise the rate limit of the GitHub API. Likely only needed on CI where we share an IP with other GitHub API users.
 
 ### `cargo run validate PROJECT_REPO_NAME`
 

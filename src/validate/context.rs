@@ -13,9 +13,11 @@ pub struct Context {
 }
 
 impl Context {
-    pub async fn get() -> eyre::Result<Self> {
+    pub async fn get(github_api_token: Option<String>) -> eyre::Result<Self> {
+        let client = github::Client::new(github_api_token);
+
         let embark_github_organisation_members =
-            github::public_organisation_members("EmbarkStudios").await?;
+            client.public_organisation_members("EmbarkStudios").await?;
 
         let rust_ecosystem_readme =
             github::download_repo_file("EmbarkStudios", "rust-ecosystem", "main", "README.md")

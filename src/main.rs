@@ -52,19 +52,26 @@ use structopt::StructOpt;
 #[structopt(global_settings = &[AppSettings::ColoredHelp, AppSettings::VersionlessSubcommands])]
 enum Command {
     #[structopt(about = "Validate all projects listed in Embark's Open Source website data.json")]
-    ValidateAll {
-        #[structopt(long("slack-webhook-url"))]
-        slack_webhook_url: Option<String>,
-    },
+    ValidateAll(ValidateAll),
 
     #[structopt(about = "Validate one project from Embark's GitHub organisation")]
     Validate { name: String },
 }
 
+#[derive(StructOpt, Debug)]
+#[structopt(flatten)]
+struct ValidateAll {
+    #[structopt(long("slack-webhook-url"))]
+    slack_webhook_url: Option<String>,
+
+    #[structopt(long("github-api-token"))]
+    github_api_token: Option<String>,
+}
+
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
     match Command::from_args() {
-        Command::ValidateAll { slack_webhook_url } => validate::all(slack_webhook_url).await,
+        Command::ValidateAll(options) => validate::all(options).await,
         Command::Validate { name } => validate::one(name).await,
     }
 }
