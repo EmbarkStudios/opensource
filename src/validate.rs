@@ -2,16 +2,21 @@ mod context;
 mod project;
 
 use self::{context::*, project::Project};
-use crate::{github, slack};
+use crate::{github, slack, ValidateAll};
 use eyre::{eyre, WrapErr};
 use itertools::Itertools;
 use std::collections::HashSet;
 
 /// Validate all projects listed in the data.json of the Embark Open Source
 /// website.
-pub async fn all(slack_webhook_url: Option<String>) -> eyre::Result<()> {
+pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
+    let ValidateAll {
+        slack_webhook_url,
+        github_api_token,
+    } = options;
+
     // Lookup required contextual information
-    let context = Context::get().await?;
+    let context = Context::get(github_api_token).await?;
 
     // Download list of projects and download CODEOWNERS file for each one
     let projects = download_projects_list().await?;
@@ -46,7 +51,7 @@ pub async fn all(slack_webhook_url: Option<String>) -> eyre::Result<()> {
 /// Validate a single project from the Embark Studios GitHub organisation.
 pub async fn one(project_name: String) -> eyre::Result<()> {
     // Lookup required contextual information
-    let context = Context::get().await?;
+    let context = Context::get(None).await?;
 
     // Validate project
     let project = Project::new(project_name, HashSet::new())
