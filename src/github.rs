@@ -1,6 +1,6 @@
 mod codeowners;
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 pub use codeowners::CodeOwners;
 
@@ -19,6 +19,7 @@ impl Client {
         Self { github_api_token }
     }
 
+    // https://docs.github.com/en/free-pro-team@latest/rest/reference/orgs#members
     pub async fn public_organisation_members(
         &self,
         organisation: &str,
@@ -38,6 +39,24 @@ impl Client {
             .wrap_err("Unable to get public members for organisation")?
             .into_iter()
             .map(|member: Member| member.login)
+            .collect())
+    }
+
+    // https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#list-organization-repositories
+    pub async fn organisation_repos(
+        &self,
+        organisation: &str,
+    ) -> eyre::Result<HashMap<String, Repo>> {
+        let url = format!(
+            "https://api.github.com/orgs/{}/repos?type=archived&per_page=100",
+            organisation
+        );
+        Ok(self
+            .api_list(url)
+            .await
+            .wrap_err("Unable to get archived repos for organisation")?
+            .into_iter()
+            .map(|repo: Repo| (repo.name.clone(), repo))
             .collect())
     }
 
@@ -75,6 +94,12 @@ impl Client {
             .error_for_status()?;
         Ok(response)
     }
+}
+
+#[derive(Debug, PartialEq, Clone, serde::Deserialize)]
+pub struct Repo {
+    pub name: String,
+    pub archived: bool,
 }
 
 pub async fn download_repo_file(
@@ -133,21 +158,19 @@ pub async fn download_file(
 fn next_pagination_page(response: &reqwest::Response) -> eyre::Result<Option<String>> {
     match response.headers().get("link") {
         None => Ok(None),
-        Some(link) => Ok(Some(
-            next_pagination_page_from_link_header(link)
-                .wrap_err("Unable to find next pagination page url in link header")?,
-        )),
+        Some(link) => Ok(next_pagination_page_from_link_header(link)
+            .wrap_err("Unable to find next pagination page url in link header")?),
     }
 }
 
 fn next_pagination_page_from_link_header(
     header: &reqwest::header::HeaderValue,
-) -> eyre::Result<String> {
-    header
-        .to_str()?
+) -> eyre::Result<Option<String>> {
+    Ok(header
+        .to_str()
+        .wrap_err("Header was not valid unicode")?
         .split(',')
-        .find_map(parse_next_link_url)
-        .ok_or_else(|| eyre!("Could not determine `next` url in header"))
+        .find_map(parse_next_link_url))
 }
 
 fn parse_next_link_url(content: &str) -> Option<String> {

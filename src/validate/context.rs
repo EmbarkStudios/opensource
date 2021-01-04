@@ -1,5 +1,5 @@
 use crate::github;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 /// Data about the state of Embark in general, to be used by multiple checks
 /// across all open source projects.
@@ -9,6 +9,7 @@ use std::collections::HashSet;
 #[derive(Debug)]
 pub struct Context {
     pub embark_github_organisation_members: HashSet<String>,
+    pub embark_github_repos: HashMap<String, github::Repo>,
     pub rust_ecosystem_readme: String,
 }
 
@@ -16,16 +17,16 @@ impl Context {
     pub async fn get(github_api_token: Option<String>) -> eyre::Result<Self> {
         let client = github::Client::new(github_api_token);
 
-        let embark_github_organisation_members =
-            client.public_organisation_members("EmbarkStudios").await?;
-
-        let rust_ecosystem_readme =
+        let (embark_github_organisation_members, embark_github_repos, rust_ecosystem_readme) = futures::join!(
+            client.public_organisation_members("EmbarkStudios"),
+            client.organisation_repos("EmbarkStudios"),
             github::download_repo_file("EmbarkStudios", "rust-ecosystem", "main", "README.md")
-                .await?;
+        );
 
         Ok(Self {
-            embark_github_organisation_members,
-            rust_ecosystem_readme,
+            embark_github_organisation_members: embark_github_organisation_members?,
+            rust_ecosystem_readme: rust_ecosystem_readme?,
+            embark_github_repos: embark_github_repos?,
         })
     }
 }
