@@ -18,7 +18,7 @@ pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
     // Lookup required contextual information
     let context = Context::get(github_api_token).await?;
 
-    // Download list of projects and download CODEOWNERS file for each one
+    // Download list of maintained projects and then validate each one
     let projects = download_projects_list().await?;
     let futures = projects
         .into_iter()
