@@ -38,6 +38,19 @@ impl Context {
             embark_github_repos: embark_github_repos?,
         })
     }
+
+    /// Get the names of all projects found on GitHub and in the opensource
+    /// website data.json. We lookup from both as a project may accidentally be
+    /// in one but not the other.
+    pub fn all_projects(&self) -> HashSet<String> {
+        let website_projects = self.opensource_website_projects.keys().map(String::from);
+        let github_projects = self
+            .embark_github_repos
+            .values()
+            .filter(|project| project.is_public_active_source_project())
+            .map(|project| project.name.to_string());
+        website_projects.chain(github_projects).collect()
+    }
 }
 
 async fn download_projects_list() -> eyre::Result<HashMap<String, OpenSourceWebsiteDataProject>> {

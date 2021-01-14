@@ -100,6 +100,17 @@ impl Client {
 pub struct Repo {
     pub name: String,
     pub archived: bool,
+    pub private: bool,
+    pub fork: bool,
+}
+
+impl Repo {
+    pub fn is_public_active_source_project(&self) -> bool {
+        match self.name.as_str() {
+            "opensource-template" | ".github" => false,
+            _ => !(self.archived || self.private || self.fork),
+        }
+    }
 }
 
 pub async fn download_repo_file(
@@ -184,26 +195,68 @@ fn parse_next_link_url(content: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn parse_next_link_url() {
-        assert_eq!(super::parse_next_link_url(""), None);
+    fn test_parse_next_link_url() {
+        assert_eq!(parse_next_link_url(""), None);
 
         // A "rel" value other than "next" is not accepted
         assert_eq!(
-            super::parse_next_link_url(r#"<https://example.com/members?page=2>; rel="last""#),
+            parse_next_link_url(r#"<https://example.com/members?page=2>; rel="last""#),
             None
         );
 
         assert_eq!(
-            super::parse_next_link_url(r#"<https://example.com/members?page=2>; rel="next""#),
+            parse_next_link_url(r#"<https://example.com/members?page=2>; rel="next""#),
             Some("https://example.com/members?page=2".to_string())
         );
 
         assert_eq!(
-            super::parse_next_link_url(
-                r#"   <https://example.com/members?page=2>;    rel="next"    "#
-            ),
+            parse_next_link_url(r#"   <https://example.com/members?page=2>;    rel="next"    "#),
             Some("https://example.com/members?page=2".to_string())
         );
+    }
+
+    fn make_repo() -> Repo {
+        Repo {
+            name: "name".to_string(),
+            archived: false,
+            private: false,
+            fork: false,
+        }
+    }
+
+    #[test]
+    fn repo_is_public_active_source_project() {
+        let repo = make_repo();
+        assert!(repo.is_public_active_source_project());
+
+        // Archived are inactive
+        let mut repo = make_repo();
+        repo.archived = true;
+        assert!(!repo.is_public_active_source_project());
+
+        // Forks are inactive
+        let mut repo = make_repo();
+        repo.fork = true;
+        assert!(!repo.is_public_active_source_project());
+
+        // Private are inactive
+        let mut repo = make_repo();
+        repo.private = true;
+        assert!(!repo.is_public_active_source_project());
+
+        // .github is skipped as it's meta information
+        let mut repo = make_repo();
+        repo.name = ".github".to_string();
+        assert!(!repo.is_public_active_source_project());
+
+        // opensource-template is skipped as it cannot conform without making
+        // the templates errors prone. i.e. forgetting to configure the project
+        // means it is incorrectly detected as complying.
+        let mut repo = make_repo();
+        repo.name = "opensource-template".to_string();
+        assert!(!repo.is_public_active_source_project());
     }
 }

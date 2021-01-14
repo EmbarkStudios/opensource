@@ -22,9 +22,10 @@ pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
 
     // Download list of maintained projects and then validate each one
     let futures = context
-        .opensource_website_projects
-        .values()
-        .map(|project| Project::new(project.name.clone()).validate(&context));
+        .all_projects()
+        .into_iter()
+        .map(Project::new)
+        .map(|project| project.validate(&context));
     let projects = futures::future::join_all(futures).await;
 
     // Print results
