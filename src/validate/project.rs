@@ -10,10 +10,12 @@ pub struct Project {
     pub name: String,
     /// Projects must have a maintainer at Embark
     pub maintainers: eyre::Result<HashSet<String>>,
-    /// Projects must not be archived
+    /// Projects must not not have an archived repo
     archive_status: eyre::Result<()>,
     // Rust based projects must be included in the rust-ecosystem README.
     rust_ecosystem_registration: eyre::Result<()>,
+    // Projects must be included in the opensource website data.json
+    website_data_inclusion: eyre::Result<()>,
 }
 
 impl Project {
@@ -22,6 +24,7 @@ impl Project {
             name,
             maintainers: not_yet_checked(),
             archive_status: not_yet_checked(),
+            website_data_inclusion: not_yet_checked(),
             rust_ecosystem_registration: not_yet_checked(),
         }
     }
@@ -30,11 +33,13 @@ impl Project {
         let maintainers = self.lookup_project_maintainers(context).await;
         let rust_ecosystem_registration = self.check_rust_ecosystem_registration(context);
         let archive_status = self.check_archive_status(context);
+        let website_data_inclusion = self.check_website_data_inclusion(context);
 
         Self {
             name: self.name,
             maintainers,
             archive_status,
+            website_data_inclusion,
             rust_ecosystem_registration,
         }
     }
@@ -48,11 +53,13 @@ impl Project {
             name: _,
             maintainers,
             archive_status,
+            website_data_inclusion,
             rust_ecosystem_registration,
         } = self;
         vec![
             maintainers.as_ref().err(),
             archive_status.as_ref().err(),
+            website_data_inclusion.as_ref().err(),
             rust_ecosystem_registration.as_ref().err(),
         ]
         .into_iter()
@@ -73,7 +80,10 @@ impl Project {
         )
     }
 
-    async fn lookup_project_maintainers(&self, context: &Context) -> eyre::Result<HashSet<String>> {
+    pub async fn lookup_project_maintainers(
+        &self,
+        context: &Context,
+    ) -> eyre::Result<HashSet<String>> {
         // Download CODEOWNERS from one of the accepted branches
         let get = |branch| {
             github::download_repo_file("EmbarkStudios", &self.name, branch, ".github/CODEOWNERS")
@@ -104,7 +114,7 @@ impl Project {
         Ok(maintainers)
     }
 
-    fn check_rust_ecosystem_registration(&self, context: &Context) -> eyre::Result<()> {
+    pub fn check_rust_ecosystem_registration(&self, context: &Context) -> eyre::Result<()> {
         let tags = match context.opensource_website_projects.get(&self.name) {
             Some(project) => &project.tags,
             None => return Ok(()),
@@ -116,7 +126,7 @@ impl Project {
         }
     }
 
-    fn check_archive_status(&self, context: &Context) -> eyre::Result<()> {
+    pub fn check_archive_status(&self, context: &Context) -> eyre::Result<()> {
         let repo = context.embark_github_repos.get(&self.name).ok_or_else(|| {
             eyre!("Unable to find project in the EmbarkStudios GitHub organisation")
         })?;
@@ -124,6 +134,16 @@ impl Project {
             Err(eyre!("Project has been archived on GitHub"))
         } else {
             Ok(())
+        }
+    }
+
+    pub fn check_website_data_inclusion(&self, context: &Context) -> eyre::Result<()> {
+        if context.opensource_website_projects.contains_key(&self.name) {
+            Ok(())
+        } else {
+            Err(eyre!(
+                "Project not included in opensource-website data.json"
+            ))
         }
     }
 }
