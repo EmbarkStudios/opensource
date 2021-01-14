@@ -1,4 +1,4 @@
-use super::context::{Context, OpenSourceWebsiteDataProject};
+use super::context::Context;
 use crate::github;
 use eyre::{eyre, WrapErr};
 use futures::TryFutureExt;
@@ -8,7 +8,6 @@ use std::collections::HashSet;
 #[derive(Debug)]
 pub struct Project {
     pub name: String,
-    tags: HashSet<String>,
     /// Projects must have a maintainer at Embark
     pub maintainers: eyre::Result<HashSet<String>>,
     /// Projects must not be archived
@@ -18,18 +17,13 @@ pub struct Project {
 }
 
 impl Project {
-    pub fn new(name: String, tags: HashSet<String>) -> Self {
+    pub fn new(name: String) -> Self {
         Self {
             name,
-            tags,
             maintainers: not_yet_checked(),
             archive_status: not_yet_checked(),
             rust_ecosystem_registration: not_yet_checked(),
         }
-    }
-
-    pub fn from_website_project(project: OpenSourceWebsiteDataProject) -> Self {
-        Self::new(project.name, project.tags)
     }
 
     pub async fn validate(self, context: &Context) -> Self {
@@ -37,14 +31,12 @@ impl Project {
             lookup_project_maintainers(&self.name, &context.embark_github_organisation_members)
                 .await;
 
-        let rust_ecosystem_registration =
-            check_rust_ecosystem_registration(&self.name, &self.tags, context);
+        let rust_ecosystem_registration = check_rust_ecosystem_registration(&self.name, context);
 
         let archive_status = check_archive_status(&self.name, context);
 
         Self {
             name: self.name,
-            tags: self.tags,
             maintainers,
             archive_status,
             rust_ecosystem_registration,
@@ -58,7 +50,6 @@ impl Project {
     pub fn errors(&self) -> Vec<&eyre::Report> {
         let Self {
             name: _,
-            tags: _,
             maintainers,
             archive_status,
             rust_ecosystem_registration,
@@ -122,11 +113,11 @@ async fn lookup_project_maintainers(
     Ok(maintainers)
 }
 
-fn check_rust_ecosystem_registration(
-    name: &str,
-    tags: &HashSet<String>,
-    context: &Context,
-) -> eyre::Result<()> {
+fn check_rust_ecosystem_registration(name: &str, context: &Context) -> eyre::Result<()> {
+    let tags = match context.opensource_website_projects.get(name) {
+        Some(project) => &project.tags,
+        None => return Ok(()),
+    };
     if tags.contains("rust") && !context.rust_ecosystem_readme.contains(name) {
         Err(eyre!("Rust project not in the rust-ecosystem README"))
     } else {
