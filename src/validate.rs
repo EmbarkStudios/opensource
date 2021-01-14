@@ -5,7 +5,6 @@ use self::{context::*, project::Project};
 use crate::{slack, ValidateAll};
 use eyre::eyre;
 use itertools::Itertools;
-use std::collections::HashSet;
 
 /// Validate all projects listed in the data.json of the Embark Open Source
 /// website.
@@ -22,7 +21,7 @@ pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
     let futures = context
         .opensource_website_projects
         .values()
-        .map(|project| Project::from_website_project((*project).clone()).validate(&context));
+        .map(|project| Project::new(project.name.clone()).validate(&context));
     let projects = futures::future::join_all(futures).await;
 
     // Print results
@@ -54,9 +53,7 @@ pub async fn one(project_name: String) -> eyre::Result<()> {
     let context = Context::get(None).await?;
 
     // Validate project
-    let project = Project::new(project_name, HashSet::new())
-        .validate(&context)
-        .await;
+    let project = Project::new(project_name).validate(&context).await;
     print_status(&project);
     if project.has_errors() {
         Err(eyre!("The project does not conform to our guidelines"))
