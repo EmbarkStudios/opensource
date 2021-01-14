@@ -2,8 +2,8 @@ mod context;
 mod project;
 
 use self::{context::*, project::Project};
-use crate::{github, slack, ValidateAll};
-use eyre::{eyre, WrapErr};
+use crate::{slack, ValidateAll};
+use eyre::eyre;
 use itertools::Itertools;
 use std::collections::HashSet;
 
@@ -19,10 +19,10 @@ pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
     let context = Context::get(github_api_token).await?;
 
     // Download list of maintained projects and then validate each one
-    let projects = download_projects_list().await?;
-    let futures = projects
-        .into_iter()
-        .map(|project| project.validate(&context));
+    let futures = context
+        .opensource_website_projects
+        .values()
+        .map(|project| Project::from_website_project((*project).clone()).validate(&context));
     let projects = futures::future::join_all(futures).await;
 
     // Print results
@@ -75,22 +75,6 @@ fn print_status(project: &Project) {
     }
 
     unreachable!();
-}
-
-async fn download_projects_list() -> eyre::Result<Vec<Project>> {
-    let data = github::download_repo_json_file::<OpenSourceWebsiteData>(
-        "EmbarkStudios",
-        "opensource-website",
-        "main",
-        "data.json",
-    )
-    .await
-    .wrap_err("Unable to get list of open source Embark projects")?;
-    Ok(data
-        .projects
-        .into_iter()
-        .map(Project::from_website_project)
-        .collect())
 }
 
 fn slack_notification_blocks(projects: &[Project]) -> Vec<slack::Block> {
