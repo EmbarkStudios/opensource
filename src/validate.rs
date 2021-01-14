@@ -1,6 +1,9 @@
 mod context;
 mod project;
 
+#[cfg(test)]
+mod tests;
+
 use self::{context::*, project::Project};
 use crate::{slack, ValidateAll};
 use eyre::eyre;
