@@ -12,7 +12,10 @@ Every weekday the [`validate-all`](#cargo-run-validate-all) command is run on Gi
 
 ### `cargo run validate-all`
 
-This command checks to see if every project listed in the Embark [opensource-website data.json][data.json] conforms to our open source guidelines to the extent that this tool can detect.
+This command checks to see if every project listed in the Embark
+[opensource-website data.json][data.json] and every public repository in the
+EmbarkStudios GitHub organisation conforms to our open source guidelines to
+the extent that this tool can detect.
 
 [data.json]: https://github.com/EmbarkStudios/opensource-website/blob/main/data.json
 
