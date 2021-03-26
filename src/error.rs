@@ -11,7 +11,7 @@ pub fn cause_string(error: &(dyn Error + 'static), should_indent: bool) -> Strin
                 write!(f, "    ").unwrap();
             }
         };
-    };
+    }
 
     indent!();
     writeln!(f, "{}", error).unwrap();
