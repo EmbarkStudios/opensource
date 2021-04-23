@@ -33,7 +33,7 @@ You've got a new project - great! At Embark, we believe most things should be op
 1. Add the [EmbarkStudios / Open Source Admins](https://github.com/orgs/EmbarkStudios/teams/open-source-admins) group as admins in the repo access settings. Ask for assistance on slack if you do not have access to the repo settings.
 1. Send the private repo link to the ecosystem team and your manager for approval.
 1. Make the repository public.
-1. Add the project to the [embark.dev list of open source projects](https://github.com/EmbarkStudios/opensource-website/blob/main/data.json).
+1. Add the project to the [embark.dev list of open source projects](https://github.com/EmbarkStudios/opensource-website/blob/main/static/data/data.json).
 1. If the project is a Rust project add it to the [embark.rs list of open source Rust projects](https://github.com/EmbarkStudios/rust-ecosystem#open-source).
 1. Announce the release on Discord and any other forums such as [/r/rust](https://reddit.com/r/rust). The ecosystem team can help you with this step.
 

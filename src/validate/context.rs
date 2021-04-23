@@ -58,7 +58,7 @@ async fn download_projects_list() -> eyre::Result<HashMap<String, OpenSourceWebs
         "EmbarkStudios",
         "opensource-website",
         "main",
-        "data.json",
+        "static/data/data.json",
     )
     .await
     .wrap_err("Unable to get list of open source Embark projects")?;
