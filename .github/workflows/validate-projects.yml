@@ -1,6 +1,6 @@
 on: 
   schedule:
-    # At 11:00 on every day-of-week from Monday through Friday. https://crontab.guru/#0_11_*_*_1-5
+    # At 11:00 on every day-of-week from Monday through Friday. See https://crontab.guru/#0_11_*_*_1-5
     - cron: '0 11 * * 1-5'
 
 name: embark-oss CI
