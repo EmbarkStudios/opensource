@@ -7,13 +7,14 @@ fn make_context() -> Context {
         embark_github_organisation_members: HashSet::new(),
         embark_github_repos: HashMap::new(),
         rust_ecosystem_readme: "Readme!".to_string(),
-        opensource_website_projects: HashMap::new(),
+        opensource_website_projects: Vec::new(),
     }
 }
 
 fn make_website_project(name: &str) -> OpenSourceWebsiteDataProject {
     OpenSourceWebsiteDataProject {
         name: name.to_string(),
+        repo: None,
         tags: HashSet::new(),
     }
 }
@@ -25,9 +26,9 @@ fn check_website_data_inclusion_ok() {
     let mut context = make_context();
 
     // OK if the project is in the website data.json
-    let _ = context
+    context
         .opensource_website_projects
-        .insert(name.to_string(), make_website_project(name));
+        .push(make_website_project(name));
     assert!(project.check_website_data_inclusion(&context).is_ok())
 }
 
