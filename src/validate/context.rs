@@ -12,7 +12,7 @@ pub struct Context {
     pub embark_github_organisation_members: HashSet<String>,
     pub embark_github_repos: HashMap<String, github::Repo>,
     pub rust_ecosystem_readme: String,
-    pub opensource_website_projects: HashMap<String, OpenSourceWebsiteDataProject>,
+    pub opensource_website_projects: Vec<OpenSourceWebsiteDataProject>,
 }
 
 impl Context {
@@ -43,7 +43,13 @@ impl Context {
     /// website data.json. We lookup from both as a project may accidentally be
     /// in one but not the other.
     pub fn all_projects(&self) -> HashSet<String> {
-        let website_projects = self.opensource_website_projects.keys().map(String::from);
+        let website_projects = self.opensource_website_projects.iter().map(|proj| {
+            proj.repo
+                .as_ref()
+                .and_then(|repo_url| repo_url.rfind('/').map(|i| &repo_url[i + 1..]))
+                .unwrap_or(&proj.name)
+                .to_owned()
+        });
         let github_projects = self
             .embark_github_repos
             .values()
@@ -53,7 +59,7 @@ impl Context {
     }
 }
 
-async fn download_projects_list() -> eyre::Result<HashMap<String, OpenSourceWebsiteDataProject>> {
+async fn download_projects_list() -> eyre::Result<Vec<OpenSourceWebsiteDataProject>> {
     let data = github::download_repo_json_file::<OpenSourceWebsiteData>(
         "EmbarkStudios",
         "opensource-website",
@@ -62,11 +68,7 @@ async fn download_projects_list() -> eyre::Result<HashMap<String, OpenSourceWebs
     )
     .await
     .wrap_err("Unable to get list of open source Embark projects")?;
-    Ok(data
-        .projects
-        .into_iter()
-        .map(|project| (project.name.clone(), project))
-        .collect())
+    Ok(data.projects)
 }
 
 #[derive(Debug, Clone, serde::Deserialize)]
@@ -77,6 +79,7 @@ pub struct OpenSourceWebsiteData {
 #[derive(Debug, Clone, serde::Deserialize)]
 pub struct OpenSourceWebsiteDataProject {
     pub name: String,
+    pub repo: Option<String>,
     #[serde(default)]
     pub tags: HashSet<String>,
 }

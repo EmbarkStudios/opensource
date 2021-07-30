@@ -115,7 +115,11 @@ impl Project {
     }
 
     pub fn check_rust_ecosystem_registration(&self, context: &Context) -> eyre::Result<()> {
-        let tags = match context.opensource_website_projects.get(&self.name) {
+        let tags = match context
+            .opensource_website_projects
+            .iter()
+            .find(|proj| proj.name == self.name)
+        {
             Some(project) => &project.tags,
             None => return Ok(()),
         };
@@ -138,7 +142,11 @@ impl Project {
     }
 
     pub fn check_website_data_inclusion(&self, context: &Context) -> eyre::Result<()> {
-        if context.opensource_website_projects.contains_key(&self.name) {
+        if context
+            .opensource_website_projects
+            .iter()
+            .any(|proj| proj.name == self.name)
+        {
             Ok(())
         } else {
             Err(eyre!(
