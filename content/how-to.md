@@ -31,11 +31,11 @@ You've got a new project - great! At Embark, we believe most things should be op
 1. If the project is a Rust library project to be pushed to Crates.io publish an version publish of the crate with `cargo publish --token <TOKEN>` where `TOKEN` is and API token for the [`embark-studios`](https://crates.io/users/embark-studios) user. This shared bot account allows us to publish all crates under the same user and not have to worry about managing owners.
 1. Customise the README for your project by adding the appropriate name, description, links, and badges. This is also a great time to pick an emoji for the project!
 1. Add the [EmbarkStudios / Open Source Admins](https://github.com/orgs/EmbarkStudios/teams/open-source-admins) group as admins in the repo access settings. Ask for assistance on slack if you do not have access to the repo settings.
-1. Send the private repo link to the ecosystem team and your manager for approval.
+1. Post the private repo link with a description of what it is to the Embark #opensource Slack channel and ask for green-light to go ahead. Do @mention your manager also for visibility.
 1. Make the repository public.
 1. Add the project to the [embark.dev list of open source projects](https://github.com/EmbarkStudios/opensource-website/blob/main/static/data/data.json).
 1. If the project is a Rust project add it to the [embark.rs list of open source Rust projects](https://github.com/EmbarkStudios/rust-ecosystem#open-source).
-1. Announce the release on Discord and any other forums such as [/r/rust](https://reddit.com/r/rust). The ecosystem team can help you with this step.
+1. Announce the release on [our Discord](https://discord.gg/dAuKfZS) opensource channel and any other forums such as [/r/rust](https://reddit.com/r/rust). The ecosystem team can help you with this step. They will have the "community team" role on the Discord.
 
 ## Publishing new versions
 
@@ -65,4 +65,4 @@ We have a [public Discord](https://discord.gg/8TW9nfF) for the developer communi
 
 ### Newsletter
 
-We publish a monthly developer newsletter which covers updates on our open source work. You can [view the archive here](https://us20.campaign-archive.com/home/?u=4206f0696b8b13a996c701852&id=9a5cf35c37). As a maintainer, you can let the community team know about updates you'd like to be included.
+We publish a monthly developer newsletter which covers updates on our open source work. You can [view the archive here](https://www.embark.dev/newsletter/). As a maintainer, you can let #opensource team on Slack or Discord know about updates you'd like to be included.
