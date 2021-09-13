@@ -35,7 +35,7 @@ You've got a new project - great! At Embark, we believe most things should be op
 1. Make the repository public.
 1. Add the project to the [embark.dev list of open source projects](https://github.com/EmbarkStudios/opensource-website/blob/main/static/data/data.json).
 1. If the project is a Rust project add it to the [embark.rs list of open source Rust projects](https://github.com/EmbarkStudios/rust-ecosystem#open-source).
-1. Announce the release [our Discord](https://discord.gg/dAuKfZS) opensource channel and any other forums such as [/r/rust](https://reddit.com/r/rust). The ecosystem team can help you with this step.
+1. Announce the release on [our Discord](https://discord.gg/dAuKfZS) opensource channel and any other forums such as [/r/rust](https://reddit.com/r/rust). The ecosystem team can help you with this step. They will have the "community team" role on the Discord.
 
 ## Publishing new versions
 
