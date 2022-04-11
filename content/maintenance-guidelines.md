@@ -108,14 +108,14 @@ pull requests.
 If you are leaving Embark or no longer have the desire or capacity to
 maintain the project, find another person to adopt the role of maintainer.
 
-If you are unable to find a suitable person, contact the Arkadia Ecosystem
+If you are unable to find a suitable person, contact the open-source
 team for help.
 
-## Get help from the ecosystem team
+## Get help from the open-source team
 
 If you find yourself in a situation where you’re not sure what to do, reach
-out to the ecosystem team for support. They can be reached via the
-`#arkadia-ecosystem` channel in Slack.
+out to the open-source team for support. They can be reached via the
+`#opensource` channel in our internal Slack.
 
 ## Adhere to the code of conduct
 
