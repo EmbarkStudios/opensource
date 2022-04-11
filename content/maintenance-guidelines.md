@@ -108,7 +108,7 @@ pull requests.
 If you are leaving Embark or no longer have the desire or capacity to
 maintain the project, find another person to adopt the role of maintainer.
 
-If you are unable to find a suitable person, contact the Open-Source
+If you are unable to find a suitable person, contact the open-source
 team for help.
 
 ## Get help from the open-source team
