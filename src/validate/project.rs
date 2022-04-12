@@ -3,7 +3,7 @@ use crate::github;
 use eyre::{eyre, WrapErr};
 use futures::TryFutureExt;
 use itertools::Itertools;
-use std::collections::HashSet;
+use std::{collections::HashSet, ops::Not};
 
 #[derive(Debug)]
 pub struct Project {
@@ -96,6 +96,13 @@ impl Project {
         // Ensure all maintainers are in the EmbarkStudios organisation
         let mut maintainers_not_in_embark = maintainers
             .difference(&context.embark_github_organisation_members)
+            .filter(|user_name| {
+                // filter out non-embark users that are explicitly allowed to be maintained
+                crate::policy::ALLOWED_NON_EMBARK_MAINTAINERS
+                    .iter()
+                    .any(|a| a == user_name)
+                    .not()
+            })
             .peekable();
         if maintainers_not_in_embark.peek().is_some() {
             return Err(eyre!(
