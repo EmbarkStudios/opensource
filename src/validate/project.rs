@@ -10,8 +10,6 @@ pub struct Project {
     pub name: String,
     /// Projects must have a maintainer at Embark
     pub maintainers: eyre::Result<HashSet<String>>,
-    /// Projects must not not have an archived repo
-    archive_status: eyre::Result<()>,
     // Rust based projects must be included in the rust-ecosystem README.
     rust_ecosystem_registration: eyre::Result<()>,
     // Projects must be included in the opensource website data.json
@@ -23,7 +21,6 @@ impl Project {
         Self {
             name,
             maintainers: not_yet_checked(),
-            archive_status: not_yet_checked(),
             website_data_inclusion: not_yet_checked(),
             rust_ecosystem_registration: not_yet_checked(),
         }
@@ -32,13 +29,11 @@ impl Project {
     pub async fn validate(self, context: &Context) -> Self {
         let maintainers = self.lookup_project_maintainers(context).await;
         let rust_ecosystem_registration = self.check_rust_ecosystem_registration(context);
-        let archive_status = self.check_archive_status(context);
         let website_data_inclusion = self.check_website_data_inclusion(context);
 
         Self {
             name: self.name,
             maintainers,
-            archive_status,
             website_data_inclusion,
             rust_ecosystem_registration,
         }
@@ -52,13 +47,11 @@ impl Project {
         let Self {
             name: _,
             maintainers,
-            archive_status,
             website_data_inclusion,
             rust_ecosystem_registration,
         } = self;
         vec![
             maintainers.as_ref().err(),
-            archive_status.as_ref().err(),
             website_data_inclusion.as_ref().err(),
             rust_ecosystem_registration.as_ref().err(),
         ]
@@ -125,17 +118,6 @@ impl Project {
         };
         if tags.contains("rust") && !context.rust_ecosystem_readme.contains(&self.name) {
             Err(eyre!("Rust project not in the rust-ecosystem README"))
-        } else {
-            Ok(())
-        }
-    }
-
-    pub fn check_archive_status(&self, context: &Context) -> eyre::Result<()> {
-        let repo = context.embark_github_repos.get(&self.name).ok_or_else(|| {
-            eyre!("Unable to find project in the EmbarkStudios GitHub organisation")
-        })?;
-        if repo.archived {
-            Err(eyre!("Project has been archived on GitHub"))
         } else {
             Ok(())
         }
