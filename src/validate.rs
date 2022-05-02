@@ -25,9 +25,7 @@ pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
     let futures = context
         .all_projects()
         .into_iter()
-        .filter(|project| {
-            !excluded_projects.contains(project)
-        })
+        .filter(|project| !excluded_projects.contains(project))
         .map(Project::new)
         .map(|project| project.validate(&context));
     let projects = futures::future::join_all(futures).await;
