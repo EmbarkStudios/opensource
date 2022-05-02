@@ -17,4 +17,6 @@ jobs:
 
       - run: cargo fetch
       - run: cargo build
-      - run: cargo run validate-all --slack-webhook-url ${{ secrets.SLACK_WEBHOOK_URL }} --github-api-token ${{ secrets.GITHUB_TOKEN }}
+      # server-framework is still in development and not ready to be listed on
+      # the website
+      - run: cargo run validate-all --slack-webhook-url ${{ secrets.SLACK_WEBHOOK_URL }} --github-api-token ${{ secrets.GITHUB_TOKEN }} --skip server-framework
