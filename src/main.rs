@@ -1,4 +1,4 @@
-// #![deny(warnings)]
+#![deny(warnings)]
 #![warn(
     clippy::all,
     clippy::doc_markdown,
