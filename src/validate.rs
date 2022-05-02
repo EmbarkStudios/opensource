@@ -5,7 +5,7 @@ mod project;
 mod tests;
 
 use self::{context::*, project::Project};
-use crate::{slack, ValidateAll};
+use crate::{policy::IGNORED_PROJECTS, slack, ValidateAll};
 use eyre::eyre;
 use itertools::Itertools;
 
@@ -15,7 +15,6 @@ pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
     let ValidateAll {
         slack_webhook_url,
         github_api_token,
-        skip: excluded_projects,
     } = options;
 
     // Lookup required contextual information
@@ -25,7 +24,7 @@ pub(crate) async fn all(options: ValidateAll) -> eyre::Result<()> {
     let futures = context
         .all_projects()
         .into_iter()
-        .filter(|project| !excluded_projects.contains(project))
+        .filter(|project| !IGNORED_PROJECTS.contains(&project.as_str()))
         .map(Project::new)
         .map(|project| project.validate(&context));
     let projects = futures::future::join_all(futures).await;

@@ -67,10 +67,6 @@ struct ValidateAll {
 
     #[structopt(long("github-api-token"))]
     github_api_token: Option<String>,
-
-    /// Skip validating project
-    #[structopt(long)]
-    skip: Vec<String>,
 }
 
 #[tokio::main]
