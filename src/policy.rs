@@ -6,7 +6,7 @@ pub const ALLOWED_NON_EMBARK_MAINTAINERS: [&str; 1] = [
     // Emil (https://github.com/emilk) worked at Embark and built 2 open source crates that he continues to co-maintain
     // - https://github.com/EmbarkStudios/puffin
     // - https://github.com/EmbarkStudios/poll-promise
-    "emilk",   
+    "emilk",
     // Keith (https://github.com/keith) is contributor-to and co-maintainer of the k8s-buildkite-plugin
     // https://github.com/EmbarkStudios/k8s-buildkite-plugin
     "keith",
