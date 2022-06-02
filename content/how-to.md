@@ -15,7 +15,7 @@ You've got a new project - great! At Embark, we believe most things should be op
   - We don't want to release anything that could harm Embark from a security or intellectual property perspective. We also don't want to release something that doesn't work for non-Embarkers because it relies on an internal system. **You need to consult with your manager to assess any risks associated with releasing your project.**
 
 - **Can you commit to maintaining the project for the foreseeable future?**
-  - See the [maintenance guidelines](./maintenance-guidelines) to see what is required from an Embark open source maintainer.
+  - See the [maintenance guidelines](maintenance-guidelines) to see what is required from an Embark open source maintainer.
   - If no, you can still release ["as-is"](#repository-types) in an archived GitHub repository.
 
 - **Is it high enough quality?**
@@ -28,7 +28,6 @@ You've got a new project - great! At Embark, we believe most things should be op
 1. Edit the `.github/CODEOWNERS` file to contain the GitHub usernames of the project maintainers.
 1. If the project is a Rust project edit `.github/workflows/rust-ci.yml` to your needs, resolving all the comments marked `TODO`.
 1. If the project is not a Rust project remove the `.github/workflows/rust-ci.yml` file.
-1. If the project is a Rust library project to be pushed to Crates.io publish an version publish of the crate with `cargo publish --token <TOKEN>` where `TOKEN` is and API token for the [`embark-studios`](https://crates.io/users/embark-studios) user. This shared bot account allows us to publish all crates under the same user and not have to worry about managing owners.
 1. Customise the README for your project by adding the appropriate name, description, links, and badges. This is also a great time to pick an emoji for the project!
 1. Add the [EmbarkStudios / Open Source Admins](https://github.com/orgs/EmbarkStudios/teams/open-source-admins) group as admins in the repo access settings. Ask for assistance on slack if you do not have access to the repo settings.
 1. Post the private repo link with a description of what it is to the Embark #opensource Slack channel and ask for green-light to go ahead. Do @mention your manager also for visibility.
@@ -41,11 +40,17 @@ You've got a new project - great! At Embark, we believe most things should be op
 
 If the project is a Rust project and the steps above have been completed then new versions can be released by following these steps.
 
-1. Change the version in `Cargo.toml` and commit.
-1. Tag the commit `git tag -a <version> -m "Release <version>"`. Example: `git tag -a 0.1.0 -m "Release 0.1.0"`.
-1. Push the commit(s) and tag `git push --follow-tags`.
+1. Update the `## Unreleased` section to include all of the relevant/important changes since the last release
+1. Install [`cargo-release`](https://github.com/crate-ci/cargo-release) if you have not already done so.
+1. Run `cargo release --execute <major|minor|patch|exact>` which will do the following
+    1. Bump the crate version to the next `<major|minor|patch>` or `<exact>` version.
+    1. Replace any `pre-release-replacements` with the new version.
+    1. Commit
+    1. Publishes to crates.io (you can provide your API token with `--token` if you have a non-Embark account as your default)
+    1. Tags the commit with the version message specified in release.toml
+    1. Pushes the commits and tags
 
-This will trigger a CI build that will handle the release process to GitHub and Crates.io.
+See the [cargo-release docs](https://github.com/crate-ci/cargo-release/tree/master/docs) if you need to do something more advanced or just different.
 
 ## Repository Types
 

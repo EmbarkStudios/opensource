@@ -1,9 +1,14 @@
-# 🦕 Embark Open Source
+<!-- markdownlint-disable-next-line -->
+<div align="center">
+
+# `🦕 Embark Open Source`
+
+**Everything about open source at Embark, as an open source repo. How meta!**
 
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](http://embark.games)
 [![Embark](https://img.shields.io/badge/discord-ark-%237289da.svg?logo=discord)](https://discord.gg/dAuKfZS)
 
-Everything about open source at Embark, as an open source repo. How meta!
+</div>
 
 ## Contents
 
@@ -19,7 +24,7 @@ This repo also contains a program for validating Embark's open source projects. 
 
 ## Contributing
 
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4-ff69b4.svg)](../CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 We welcome community contributions to this project.
 
